@@ -1,0 +1,38 @@
+{{!-- 注意:下列google api key 已經沒有效 --}}
+{{!-- html --}}
+<h3>My Google Maps Demo</h3>
+<div id="map"></div>
+{{!-- css --}}
+<style>
+#map {
+    height: 400px;
+    width: 100%;
+}
+</style>
+{{!-- javascript / cdn --}}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    //google map js
+async function initMap () {
+  try {
+    const location = await axios.post('https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyDcqv0Xf-uPj9_XLApOjd-ppfHnBrtQJGY')
+
+    const position = {
+      lat: location.data.location.lat,
+      lng: location.data.location.lng
+    }
+
+    const map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 17,
+      center: position
+    })
+    const marker = new google.maps.Marker({
+      position,
+      map
+    })
+  } catch (err) { console.log(err) }
+}
+
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBC-K0X-piDtlK8X1QdtjuPjiBw28Uzx_8&callback=initMap"></script>
+
