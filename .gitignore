@@ -1,3 +1,4 @@
 /node_modules
 /.env
 /myFile
+/puppeteer/twitter.js
