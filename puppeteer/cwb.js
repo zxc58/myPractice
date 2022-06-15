@@ -16,15 +16,18 @@ const puppeteer = require('puppeteer');
     const informationArray = await Promise.all(rawDataArray.map(e => e.evaluate(
       f => {
         const text = f.innerText.replaceAll('\n', '').replaceAll('\t', '')
-        const time = text.substring(text.indexOf('級') + 1, text.indexOf('點我看更多'))
-        const location = text.substring(text.indexOf('地點') + 2, text.indexOf('深度'))
-        const depth = text.substring(text.indexOf('深度') + 2, text.indexOf('地震規模'))
-        const scale = text.substring(text.indexOf('地震規模') + 4)
-        return `Time:2022 ${time}\nLocation:${location}\nDepth:${depth}\nScale:${scale}\n`
+        const time = /\d{2}\/\d{2}\s\d{2}:\d{2}/.exec(text)[0]
+        const location = /地點.+\)/.exec(text)[0].replace('地點', '地點:')
+        // text.substring(text.indexOf('地點') + 2, text.indexOf('深度'))
+        const depth = /深度.+km/.exec(text)[0].replace('深度', '深度:')
+        // text.substring(text.indexOf('深度') + 2, text.indexOf('地震規模'))
+        const scale = /地震規模.+/.exec(text)[0].replace('地震規模', '地震規模:')
+        // text.substring(text.indexOf('地震規模') + 4)
+        return `時間:${time}\n${location}\n${depth}\n${scale}\n`
       }
     )))
     const informationString = informationArray.join('\n')
-    await fsPromises.writeFile(path.resolve(__dirname, '../', 'myFile', 'earthquakeData.txt'), informationString)
+    await fsPromises.writeFile(path.resolve(__dirname, '../', 'myFile', '地震資料.txt'), informationString)
     console.log('done')
   } catch (err) {
     console.log(err)
